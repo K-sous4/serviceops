@@ -1,0 +1,248 @@
+:root {
+  /* Colors */
+  /* From DESIGN.md — Robust Efficiency */
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #45474c;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+  --color-outline: #75777d;
+  --color-outline-variant: #c5c6cd;
+  --color-surface-tint: #545f73;
+  --color-primary: #091426; /* Primary anchor */
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1e293b;
+  --color-on-primary-container: #8590a6;
+  --color-inverse-primary: #bcc7de;
+  --color-action-blue: #3b82f6; /* interactive */
+  --color-secondary: #0058be;
+  --color-on-secondary: #ffffff;
+  --color-tertiary: #1e1200;
+  --color-error: #ba1a1a;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-background: #f7f9fb;
+  --color-on-background: #191c1e;
+  --color-surface-variant: #e0e3e5;
+
+  /* Accessibility / text */
+  --color-text: var(--color-on-surface);
+  --color-muted: #6b7280;
+
+  /* Typography tokens from DESIGN.md */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  --display-lg-size: 32px;
+  --display-lg-weight: 700;
+  --headline-md-size: 24px;
+  --headline-md-weight: 600;
+  --headline-sm-size: 20px;
+  --headline-sm-weight: 600;
+  --body-lg-size: 16px;
+  --body-lg-weight: 400;
+  --body-md-size: 14px;
+  --label-md-size: 12px;
+  --label-md-weight: 600;
+  --label-sm-size: 11px;
+
+  /* Spacing (8px scale as described) */
+  --space-base: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --container-max: 1440px;
+  --gutter: 24px;
+
+  /* Radii (Shapes) */
+  --radius-sm: 0.125rem; /* 2px */
+  --radius-default: 0.125rem; /* 2px */
+  --radius-md: 0.25rem; /* 4px */
+  --radius-lg: 0.25rem; /* 4px */
+  --radius-xl: 0.5rem; /* 8px */
+  --radius-full: 0.75rem; /* 12px */
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: #0f1720;
+    --color-surface-container: #111827;
+    --color-text: #e6eef8;
+    --color-muted: #9aa4b2;
+    --color-primary: #38bdf8;
+  }
+}
+
+/* Utility helpers (optional) */
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.5rem 1rem;
+  background: var(--color-action-blue);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+}
+
+/* Elevation levels per DESIGN.md */
+.elevation-0 {
+  background: var(--color-surface);
+  box-shadow: none;
+  border: none;
+}
+.elevation-1 {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.elevation-2 {
+  background: var(--color-surface-container);
+  border: 1px solid #d1d5db;
+  box-shadow: 0 8px 12px rgba(0,0,0,0.08);
+}
+.elevation-3 {
+  background: var(--color-surface-container-high);
+  box-shadow: 0 16px 24px rgba(0,0,0,0.12);
+  backdrop-filter: blur(12px);
+}
+
+/* Button variants */
+.btn-primary { background: var(--color-action-blue); color: var(--color-on-primary); }
+.btn-secondary { background: var(--color-surface-container); color: var(--color-primary); border: 1px solid var(--color-outline); }
+
+/* Input focus */
+.input {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: 0.5rem 0.75rem;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-action-blue);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+}
+
+/* Status chips */
+.chip { display: inline-flex; align-items:center; gap:8px; padding:4px 8px; border-radius:9999px; font-size:var(--label-sm-size); }
+.chip-completed { background: rgba(16,185,129,0.1); color: #065f46; }
+.chip-pending { background: rgba(245,158,11,0.1); color: #92400e; }
+
+/* Typography helpers used by the login layout */
+.font-display-lg,
+.font-headline-md,
+.font-headline-md-mobile,
+.font-headline-sm,
+.font-body-lg,
+.font-body-md,
+.font-label-md,
+.font-label-sm {
+  font-family: var(--font-sans);
+}
+
+.font-display-lg { font-size: 32px; font-weight: 700; line-height: 40px; letter-spacing: -0.02em; }
+.font-headline-md { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.01em; }
+.font-headline-md-mobile { font-size: 20px; font-weight: 600; line-height: 28px; }
+.font-headline-sm { font-size: 20px; font-weight: 600; line-height: 28px; }
+.font-body-lg { font-size: 16px; font-weight: 400; line-height: 24px; }
+.font-body-md { font-size: 14px; font-weight: 400; line-height: 20px; }
+.font-label-md { font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.05em; }
+.font-label-sm { font-size: 11px; font-weight: 500; line-height: 14px; }
+
+.text-display-lg { font-size: 32px; line-height: 40px; letter-spacing: -0.02em; }
+.text-headline-md { font-size: 24px; line-height: 32px; letter-spacing: -0.01em; }
+.text-headline-md-mobile { font-size: 20px; line-height: 28px; }
+.text-headline-sm { font-size: 20px; line-height: 28px; }
+.text-body-lg { font-size: 16px; line-height: 24px; }
+.text-body-md { font-size: 14px; line-height: 20px; }
+.text-label-md { font-size: 12px; line-height: 16px; letter-spacing: 0.05em; }
+.text-label-sm { font-size: 11px; line-height: 14px; }
+
+/* Icon font */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-feature-settings: 'liga';
+  font-variant-ligatures: contextual;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Color utility fallbacks (for custom tokens) */
+.bg-background { background-color: var(--color-background); }
+.bg-primary-container { background-color: var(--color-primary-container); }
+.bg-primary-fixed { background-color: #d8e3fb; }
+.bg-secondary-fixed { background-color: #d8e2ff; }
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-container-low { background-color: var(--color-surface-container-low); }
+.bg-surface-container-lowest { background-color: var(--color-surface-container-lowest); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-container { background-color: #2170e4; }
+
+.text-primary { color: var(--color-primary); }
+.text-primary-fixed { color: #d8e3fb; }
+.text-on-primary { color: var(--color-on-primary); }
+.text-on-primary-container { color: var(--color-on-primary-container); }
+.text-on-surface { color: var(--color-on-surface); }
+.text-on-surface-variant { color: var(--color-on-surface-variant); }
+.text-on-secondary { color: var(--color-on-secondary); }
+.text-secondary { color: var(--color-secondary); }
+
+.border-outline { border-color: var(--color-outline); }
+.border-outline-variant { border-color: var(--color-outline-variant); }
+
+/* Spacing utility fallbacks (custom scale) */
+.p-gutter { padding: var(--gutter); }
+.p-base { padding: var(--space-base); }
+.p-xl { padding: var(--space-xl); }
+.px-gutter { padding-left: var(--gutter); padding-right: var(--gutter); }
+.py-md { padding-top: var(--space-md); padding-bottom: var(--space-md); }
+.mt-base { margin-top: var(--space-base); }
+.mt-lg { margin-top: var(--space-lg); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.pt-md { padding-top: var(--space-md); }
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.right-md { right: var(--space-md); }
+
+.space-y-base > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-base); }
+.space-y-md > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-md); }
+
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-lg { border-radius: var(--radius-lg); }
+
+/* Shadow fallbacks */
+.shadow-sm { box-shadow: 0 2px 4px rgba(0,0,0,0.06); }
+.shadow-md { box-shadow: 0 6px 12px rgba(0,0,0,0.10); }
+.shadow-lg { box-shadow: 0 12px 20px rgba(0,0,0,0.16); }
+
+/* Arbitrary text size fallbacks used in login page */
+.text-\[40px\] { font-size: 40px !important; }
+.text-\[20px\] { font-size: 20px !important; }
+.text-\[18px\] { font-size: 18px !important; }
+.text-\[16px\] { font-size: 16px !important; }
+
+
+/* Usage: import this file in app/globals.css */

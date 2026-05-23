@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String?        @unique
+  username     String?        @unique
+  fullName     String?        @map("full_name")
+  role         String?
+  passwordHash String?        @map("password_hash")
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  sessions     UserSession[]
+  technicians  Technician[]
+  messages     OrderMessage[] @relation("MessageSenderUser")
+  activities   OrderActivity[] @relation("ActivityActorUser")
+  mfaSettings  MfaSetting[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_sessions")
+}
+
+model Client {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  docNumber String?  @map("doc_number")
+  city      String?
+  state     String?
+  phone     String?
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  serviceOrders ServiceOrder[]
+
+  @@map("clients")
+}
+
+model Technician {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  fullName  String   @map("full_name")
+  initials  String?
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user        User?           @relation(fields: [userId], references: [id])
+  serviceOrders ServiceOrder[]
+  messages    OrderMessage[]  @relation("MessageSenderTechnician")
+  activities  OrderActivity[] @relation("ActivityActorTechnician")
+  schedules   Schedule[]
+  teamMembers TeamMember[]
+
+  @@map("technicians")
+}
+
+model Team {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  members TeamMember[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  teamId       String @map("team_id") @db.Uuid
+  technicianId String @map("technician_id") @db.Uuid
+
+  team       Team       @relation(fields: [teamId], references: [id])
+  technician Technician @relation(fields: [technicianId], references: [id])
+
+  @@id([teamId, technicianId])
+  @@map("team_members")
+}
+
+model ServiceOrder {
+  id           String   @id @default(uuid()) @db.Uuid
+  orderNumber  String   @unique @map("order_number")
+  clientId     String?  @map("client_id") @db.Uuid
+  technicianId String?  @map("technician_id") @db.Uuid
+  title        String?
+  description  String?
+  status       String   @default("pending")
+  scheduledAt  DateTime? @map("scheduled_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  client      Client?     @relation(fields: [clientId], references: [id])
+  technician  Technician? @relation(fields: [technicianId], references: [id])
+  messages    OrderMessage[]
+  activities  OrderActivity[]
+  transactions FinancialTransaction[]
+
+  @@map("service_orders")
+}
+
+model OrderMessage {
+  id                  String   @id @default(uuid()) @db.Uuid
+  orderId             String   @map("order_id") @db.Uuid
+  senderUserId        String?  @map("sender_user_id") @db.Uuid
+  senderTechnicianId  String?  @map("sender_technician_id") @db.Uuid
+  message             String
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  order           ServiceOrder @relation(fields: [orderId], references: [id])
+  senderUser      User?        @relation("MessageSenderUser", fields: [senderUserId], references: [id])
+  senderTechnician Technician? @relation("MessageSenderTechnician", fields: [senderTechnicianId], references: [id])
+
+  @@map("order_messages")
+}
+
+model OrderActivity {
+  id                  String   @id @default(uuid()) @db.Uuid
+  orderId             String   @map("order_id") @db.Uuid
+  actorUserId         String?  @map("actor_user_id") @db.Uuid
+  actorTechnicianId   String?  @map("actor_technician_id") @db.Uuid
+  action              String
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  order           ServiceOrder @relation(fields: [orderId], references: [id])
+  actorUser       User?        @relation("ActivityActorUser", fields: [actorUserId], references: [id])
+  actorTechnician Technician?  @relation("ActivityActorTechnician", fields: [actorTechnicianId], references: [id])
+
+  @@map("order_activities")
+}
+
+model Schedule {
+  id           String   @id @default(uuid()) @db.Uuid
+  technicianId String   @map("technician_id") @db.Uuid
+  startAt      DateTime @map("start_at") @db.Timestamptz(6)
+  endAt        DateTime @map("end_at") @db.Timestamptz(6)
+  status       String   @default("scheduled")
+  notes        String?
+
+  technician Technician @relation(fields: [technicianId], references: [id])
+
+  @@map("schedules")
+}
+
+model FinancialTransaction {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String?  @map("order_id") @db.Uuid
+  amount    Decimal  @default(0) @db.Decimal(12, 2)
+  currency  String   @default("BRL")
+  status    String   @default("pending")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  order ServiceOrder? @relation(fields: [orderId], references: [id])
+
+  @@map("financial_transactions")
+}
+
+model MfaSetting {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  method    String
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("mfa_settings")
+}
