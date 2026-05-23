@@ -28,6 +28,7 @@ Copy `.env.example` to `.env` and set the database URLs:
 - `DATABASE_URL_UNPOOLED`: unpooled connection string for migrations. Locally, this can be the same value as `DATABASE_URL`.
 
 On Vercel, add both variables in Project Settings. The build runs `prisma migrate deploy`, so the database must be reachable during deploys.
+If you use the Vercel/Neon integration with prefixed variables, the build script maps common variants (like `POSTGRES_PRISMA_URL`) to Prisma automatically.
 
 ## Learn More
 
