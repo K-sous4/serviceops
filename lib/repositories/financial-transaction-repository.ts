@@ -15,15 +15,24 @@ export class FinancialTransactionRepository {
   }
 
   async sumAmountByStatusSince(status: string, since: Date) {
-    const result = await prisma.financialTransaction.aggregate({
-      _sum: { amount: true },
-      where: {
-        status,
-        createdAt: { gte: since },
-      },
-    })
+    try {
+      const result = await prisma.financialTransaction.aggregate({
+        _sum: { amount: true },
+        where: {
+          status,
+          createdAt: { gte: since },
+        },
+      })
 
-    const amount = result._sum.amount
-    return amount ? Number(amount) : 0
+      const amount = result._sum.amount
+      return amount ? Number(amount) : 0
+    } catch (error) {
+      console.error('[FinancialTransactionRepository.sumAmountByStatusSince] failed', {
+        status,
+        since: since.toISOString(),
+        error,
+      })
+      throw error
+    }
   }
 }

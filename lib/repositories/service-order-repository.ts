@@ -14,8 +14,13 @@ export class ServiceOrderRepository {
     return prisma.serviceOrder.findMany(args)
   }
 
-  countByStatus(status: string) {
-    return prisma.serviceOrder.count({ where: { status } })
+  async countByStatus(status: string) {
+    try {
+      return await prisma.serviceOrder.count({ where: { status } })
+    } catch (error) {
+      console.error('[ServiceOrderRepository.countByStatus] failed', { status, error })
+      throw error
+    }
   }
 
   update(id: string, data: Prisma.ServiceOrderUpdateInput) {

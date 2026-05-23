@@ -14,8 +14,13 @@ export class TechnicianRepository {
     return prisma.technician.findMany(args)
   }
 
-  countByStatus(status: string) {
-    return prisma.technician.count({ where: { status } })
+  async countByStatus(status: string) {
+    try {
+      return await prisma.technician.count({ where: { status } })
+    } catch (error) {
+      console.error('[TechnicianRepository.countByStatus] failed', { status, error })
+      throw error
+    }
   }
 
   update(id: string, data: Prisma.TechnicianUpdateInput) {
