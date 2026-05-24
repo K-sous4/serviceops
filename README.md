@@ -26,9 +26,11 @@ Copy `.env.example` to `.env` and set the database URLs:
 
 - `DATABASE_URL`: pooled connection string (use the Neon pooler in production).
 - `DATABASE_URL_UNPOOLED`: unpooled connection string for migrations. Locally, this can be the same value as `DATABASE_URL`.
+- `SERVICEOPS_DATABASE_URL_DATABASE_URL`: Vercel/Neon integration variable used by Prisma in this repo.
+- `SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED`: Vercel/Neon integration variable for migrations.
 
 On Vercel, add both variables in Project Settings. The build runs `prisma migrate deploy`, so the database must be reachable during deploys.
-If you use the Vercel/Neon integration with prefixed variables, the build script maps common variants (like `POSTGRES_PRISMA_URL`) to Prisma automatically.
+If you use the Vercel/Neon integration, the build script also maps common variants (like `POSTGRES_PRISMA_URL`) to the required variables automatically.
 
 ## Learn More
 

@@ -30,11 +30,39 @@ function resolveDatabaseUrl(env: NodeJS.ProcessEnv) {
   )
 }
 
+function resolveUnpooledUrl(env: NodeJS.ProcessEnv) {
+  return (
+    pickFromKeys(env, ['DATABASE_URL_UNPOOLED', 'POSTGRES_URL_NON_POOLING']) ||
+    findBySuffix(env, ['_DATABASE_URL_UNPOOLED', '_POSTGRES_URL_NON_POOLING'])
+  )
+}
+
 const resolvedDatabaseUrl = resolveDatabaseUrl(process.env)
+const resolvedUnpooledUrl = resolveUnpooledUrl(process.env)
 
 if (resolvedDatabaseUrl && !process.env.DATABASE_URL) {
   process.env.DATABASE_URL = resolvedDatabaseUrl.value
   console.info(`[db] DATABASE_URL resolved from ${resolvedDatabaseUrl.key}`)
+}
+
+if (resolvedDatabaseUrl && !process.env.SERVICEOPS_DATABASE_URL) {
+  process.env.SERVICEOPS_DATABASE_URL = resolvedDatabaseUrl.value
+  console.info('[db] SERVICEOPS_DATABASE_URL resolved from database URL')
+}
+
+if (resolvedDatabaseUrl && !process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL) {
+  process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL = resolvedDatabaseUrl.value
+  console.info('[db] SERVICEOPS_DATABASE_URL_DATABASE_URL resolved from database URL')
+}
+
+if (resolvedUnpooledUrl && !process.env.DATABASE_URL_UNPOOLED) {
+  process.env.DATABASE_URL_UNPOOLED = resolvedUnpooledUrl.value
+  console.info('[db] DATABASE_URL_UNPOOLED resolved from unpooled URL')
+}
+
+if (resolvedUnpooledUrl && !process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED) {
+  process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED = resolvedUnpooledUrl.value
+  console.info('[db] SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED resolved from unpooled URL')
 }
 
 // Enable verbose Prisma logs by setting DEBUG_PRISMA=true.
@@ -43,8 +71,8 @@ const prismaClient = globalForPrisma.prisma ??
     log: process.env.DEBUG_PRISMA === 'true' ? ['query', 'warn', 'error'] : ['warn', 'error'],
   })
 
-if (!process.env.DATABASE_URL) {
-  console.error('[db] Missing DATABASE_URL env var')
+if (!process.env.DATABASE_URL && !process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL) {
+  console.error('[db] Missing database URL env var')
 }
 
 export const prisma = prismaClient

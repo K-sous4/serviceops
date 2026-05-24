@@ -49,11 +49,43 @@ const env = {
   DATABASE_URL_UNPOOLED: unpooledUrl?.value || databaseUrl.value,
 }
 
+if (!env.SERVICEOPS_DATABASE_URL) {
+  env.SERVICEOPS_DATABASE_URL = databaseUrl.value
+}
+
+if (!env.SERVICEOPS_DATABASE_URL_UNPOOLED) {
+  env.SERVICEOPS_DATABASE_URL_UNPOOLED = unpooledUrl?.value || databaseUrl.value
+}
+
+if (!env.SERVICEOPS_DATABASE_URL_DATABASE_URL) {
+  env.SERVICEOPS_DATABASE_URL_DATABASE_URL = databaseUrl.value
+}
+
+if (!env.SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED) {
+  env.SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED = unpooledUrl?.value || databaseUrl.value
+}
+
 console.log(`[build] DATABASE_URL <- ${databaseUrl.key}`)
 if (unpooledUrl?.value) {
   console.log(`[build] DATABASE_URL_UNPOOLED <- ${unpooledUrl.key}`)
 } else {
   console.warn('[build] DATABASE_URL_UNPOOLED not set; using DATABASE_URL as fallback')
+}
+
+if (!process.env.SERVICEOPS_DATABASE_URL) {
+  console.log('[build] SERVICEOPS_DATABASE_URL <- resolved DATABASE_URL')
+}
+
+if (!process.env.SERVICEOPS_DATABASE_URL_UNPOOLED) {
+  console.log('[build] SERVICEOPS_DATABASE_URL_UNPOOLED <- resolved DATABASE_URL_UNPOOLED')
+}
+
+if (!process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL) {
+  console.log('[build] SERVICEOPS_DATABASE_URL_DATABASE_URL <- resolved DATABASE_URL')
+}
+
+if (!process.env.SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED) {
+  console.log('[build] SERVICEOPS_DATABASE_URL_DATABASE_URL_UNPOOLED <- resolved DATABASE_URL_UNPOOLED')
 }
 
 function run(command) {
